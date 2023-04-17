@@ -75,3 +75,102 @@ studies of unity and C#
 
   - 해체 영역
     - OnDestroy(): 게임 오브젝트가 삭제될 떄
+
+- Input과 Key 종류
+
+  - Parameter 없음:
+
+    - anyKey: 마우스 및 키보드
+      - anyKeyDown
+      - anyKey
+      - anyKeyUP
+
+  - Parameter로 키 종류를 받음
+
+    - Parameter 전달 방식
+
+      - KeyCode.{키 이름}
+      - "Input Manager의 Axe 이름"
+
+    - GetKey: 키보드 버튼
+
+      - GetKeyDown
+      - GetKey
+      - GetKeyUp
+
+    - GetMouseButton: 마우스 버튼
+
+      - GetMouseButtonDown
+      - GetMouseButton
+      - GetMouseButtonUp
+
+      - MouseButton(0): 왼쪽 버튼
+      - MouseButton(1): 오른쪽 버튼
+
+  - GetAxis
+    - GetAxis: 가중치를 포함한 값을 리턴
+    - GetAxisRaw: 가중치를 무시하고 값을 리턴
+
+- Transform
+
+  - 오브젝트 형태에 대한 기본 component
+
+  -transform.Translate(Vector3);
+
+  - transform에 Vector3로 정의된 벡터 값을 더함
+
+  - Vector3 정의
+    ```cs
+      Vector3 vec = new Vector3(0, 0, 0);
+    '''
+    ```
+
+- 목표 지점까지의 이동: Vector3 내장 메소드 활용
+
+  - MoveTowards: 등속 이동
+
+    ```cs
+      transform.position =
+          Vector3.MoveTowards(transform.position, target, 1f);
+    ```
+
+    - Parameters
+      - 현재 위치
+      - 목표 위치
+      - 속도
+
+  - SmoothDamp: 부드러운 이동
+
+    ```cs
+      transform.position =
+            Vector3.SmoothDamp(transform.position, target, ref velo, 1f);
+    ```
+
+    - Parameters
+      - 현재 위치
+      - 목표 위치
+      - 참조 속도
+      - 속도
+    - 4번째 parameter와 속도가 반비례함
+
+  - Lerp: 선형 보간, SmoothDamp보다 감속시간이 길다
+
+    ```cs
+      transform.position =
+            Vector3.Lerp(transform.position, target, ref velo, 1f);
+    ```
+
+    - Parameters
+      - SmoothDamp와 같다
+    - 4번째 parameter와 속도가 비례함, 최대값은 1f
+
+  - SLerp: 구면 선형 보간, 원호를 그리며 이동
+    ```cs
+    transform.position =
+            Vector3.Slerp(transform.position, target, ref velo, 1f);
+    ```
+
+- Time.deltaTime
+  - deltaTime 값은 프레임이 작으면 크고, 프레임이 크면 작음
+  - 프레임률에 따라 실행 결과가 달라지지 않게 하기 위함
+
