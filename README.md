@@ -113,64 +113,173 @@ studies of unity and C#
 
 - Transform
 
-  - 오브젝트 형태에 대한 기본 component
+- 오브젝트 형태에 대한 기본 component
 
-  -transform.Translate(Vector3);
+-transform.Translate(Vector3);
 
-  - transform에 Vector3로 정의된 벡터 값을 더함
+- transform에 Vector3로 정의된 벡터 값을 더함
 
-  - Vector3 정의
-    ```cs
-      Vector3 vec = new Vector3(0, 0, 0);
-    '''
-    ```
+- Vector3 정의
+
+  ```cs
+    Vector3 vec = new Vector3(0, 0, 0);
+  '''
+  ```
 
 - 목표 지점까지의 이동: Vector3 내장 메소드 활용
 
-  - MoveTowards: 등속 이동
+- MoveTowards: 등속 이동
 
-    ```cs
-      transform.position =
-          Vector3.MoveTowards(transform.position, target, 1f);
-    ```
-
-    - Parameters
-      - 현재 위치
-      - 목표 위치
-      - 속도
-
-  - SmoothDamp: 부드러운 이동
-
-    ```cs
-      transform.position =
-            Vector3.SmoothDamp(transform.position, target, ref velo, 1f);
-    ```
-
-    - Parameters
-      - 현재 위치
-      - 목표 위치
-      - 참조 속도
-      - 속도
-    - 4번째 parameter와 속도가 반비례함
-
-  - Lerp: 선형 보간, SmoothDamp보다 감속시간이 길다
-
-    ```cs
-      transform.position =
-            Vector3.Lerp(transform.position, target, ref velo, 1f);
-    ```
-
-    - Parameters
-      - SmoothDamp와 같다
-    - 4번째 parameter와 속도가 비례함, 최대값은 1f
-
-  - SLerp: 구면 선형 보간, 원호를 그리며 이동
-    ```cs
+  ```cs
     transform.position =
-            Vector3.Slerp(transform.position, target, ref velo, 1f);
-    ```
+        Vector3.MoveTowards(transform.position, target, 1f);
+  ```
+
+  - Parameters
+    - 현재 위치
+    - 목표 위치
+    - 속도
+
+- SmoothDamp: 부드러운 이동
+
+  ```cs
+    transform.position =
+          Vector3.SmoothDamp(transform.position, target, ref velo, 1f);
+  ```
+
+  - Parameters
+    - 현재 위치
+    - 목표 위치
+    - 참조 속도
+    - 속도
+  - 4번째 parameter와 속도가 반비례함
+
+- Lerp: 선형 보간, SmoothDamp보다 감속시간이 길다
+
+  ```cs
+    transform.position =
+          Vector3.Lerp(transform.position, target, ref velo, 1f);
+  ```
+
+  - Parameters
+    - SmoothDamp와 같다
+  - 4번째 parameter와 속도가 비례함, 최대값은 1f
+
+- SLerp: 구면 선형 보간, 원호를 그리며 이동
+
+  ```cs
+  transform.position =
+          Vector3.Slerp(transform.position, target, ref velo, 1f);
+  ```
 
 - Time.deltaTime
-  - deltaTime 값은 프레임이 작으면 크고, 프레임이 크면 작음
-  - 프레임률에 따라 실행 결과가 달라지지 않게 하기 위함
 
+- deltaTime 값은 프레임이 작으면 크고, 프레임이 크면 작음
+- 프레임률에 따라 실행 결과가 달라지지 않게 하기 위함
+
+- 물리 구현
+
+- RigidBody: 중력을 받기 위한 컴포넌트
+
+  - Mass: 질량
+  - UseGravity(Checked): 중력이 적용됨
+  - IsKinematic(Checked): 외부 물리효과를 무시(스크립트를 통해서만 움직일 수 있게 됨)
+
+- Collider: 물리효과를 받기 위한 컴포넌트
+
+  - Disable / Enable -> 다른 오브젝트와 충돌 불가능/가능
+  - Radius = 0.5이면 오브젝트 크기와 충돌영역 크기가 같음 (아직 확실하지 않음)
+
+- Material: 오브젝트의 표면 재질을 결정하는 컴포넌트
+
+  - Assets -> Create -> Material
+
+  - Albedo: 색상 설정
+  - Metalic: 금속 재질 수치
+  - Smoothness: 반사율 수치(광택)
+
+  - Texture: 재질에 들어가는 이미지
+
+  - Emission: 발광도, 빛이 물리적으로 발광하는 것은 아님
+  - Tiling: Texture 반복 개수
+
+- Physic Material (물리 재질)
+
+  - 탄성과 마찰을 다루는 물리적인 재질
+  - 정지마찰계수(Static Friction), 운동마찰계수(Dynamic Friction), 탄성계수(Bounciness) 설정 가능
+  - Friction Combine: Minimum으로!
+  - Bounce Combine: Maximum으로!
+
+- 돌림힘
+
+  ```cs
+  // 돌림힘 추가
+  // rigid.AddTorque(Vector3.up);
+  ```
+
+- 충돌 이벤트
+
+  - Collision: 충돌 정보 클래스
+
+  - 실제 물리적인 충돌로 발생하는 이벤트
+
+    - CollisionEnter(): 물리적 충돌이 시작할 때 호출되는 함수
+    - CollisionStay(): 충돌하는 중일 때
+    - CollisionExit(): 충돌이 끝났을 때 호출
+
+  - 콜라이더 충돌로 발생하는 이벤트
+    - OnTriggerEnter()
+    - OnTriggerStay()
+    - OnTriggerExit()
+
+- UI 생성
+
+  - Unity의 좌표계
+
+    - World: 3D 세계
+
+    - Screen: World를 보여주는 2D 화면
+
+  - 캔버스(Canvas)
+
+    - Hierachy 창에서 위쪽에 있을수록 먼저 그려짐(아래쪽에 깔리게 됨)
+
+    - Text UI
+
+      - Hierachy -> UI -> Legacy -> Text
+      - Wrap: 텍스트 박스 안에 담길 수 있는 영역만 표시
+      - Overflow: 텍스트 박스를 넘어서는 텍스트도 표시
+
+    - Image UI
+
+      - Hierachy -> UI -> Legacy -> Image
+      - 삽입하려는 이미지 파일 (gif, jpeg, png 등)의 Texture Type을 변경
+        - Sprite (2D and UI)로 변경
+      - Source Image에 Drag & Drop
+
+      - 이미지 비율 고정
+
+        - Preserve Aspect에 체크
+
+      - 이미지 원본 크기로 세팅
+
+        - Set Native Size
+
+      - Image Type
+        - Simple: 기본
+        - Sliced: 모서리 부분 영역은 유지하고 그 외의 부분만 크기 변화, 버튼 만들 때 사용
+        - Tiled: 이미지 원본 크기로 고정하고 반복해서 채우는 것
+        - Radial: 회전하면서 이미지가 사라지거나 나타남
+
+    - Button
+
+      - Interactable: 버튼 활성화/비활성화 옵션
+      - Transition
+        - Color Tint: 버튼 색상 설정
+      - Navigation: Tab 키를 눌렀을 때 다음 버튼을 무엇으로 할 지 지시
+
+      - 관련 기능이 실행받을 오브젝트를 Hierachy에서 Drag & Drop해야 함
+
+    - 앵커 (Anchor)
+      - UI 오브젝트의 상대적인 기준점을 캔버스를 기준으로 해서 어디에 둘 것인지 설정 가능
+      -
